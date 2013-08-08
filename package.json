@@ -1,0 +1,23 @@
+{
+  "name": "yolo-archer",
+  "version": "0.0.0",
+  "description": "yolo-archer ===========",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yangsu/yolo-archer.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/yangsu/yolo-archer/issues"
+  },
+  "dependencies": {
+    "async": "~0.2.9",
+    "lodash": "~1.3.1",
+    "imap": "~0.8.1"
+  }
+}
