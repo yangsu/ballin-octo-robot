@@ -12,22 +12,21 @@ secret = require '../secret'
 dir = secret.messages.dir
 files = fs.readdirSync dir
 
-files = files.slice 0, 10
+files = files.slice 10, 16
 
 messages = []
 
-# key moment.unix(date.unix())
-
-readReqs = {}
-for file in files
-    readReqs[file] = (cb) ->
+readReqs = _.reduce files, ((memo, file) ->
+    memo[file] = (cb) ->
         ms = new Messages
         csv()
             .from.path(path.resolve(dir, file), columns: true)
-            .to.array((rows) -> ms.reset(rows))
+            .to.array((rows) ->
+                ms.reset(rows, parse:true))
             .on('end', (count) -> cb(null, ms))
             .on('error', (err) -> cb(null, ms))
-
+    memo)
+, {}
 
 console.time 'read'
 async.parallel readReqs, (err, data) ->
@@ -36,6 +35,6 @@ async.parallel readReqs, (err, data) ->
     if err
         console.log err
     else
-        # console.log data
         _.each data, (ms, i) ->
-            console.log ms.getPhoneNumbers()
+            # console.log ms.get 1366416725
+            console.log ms.getTimestamps()

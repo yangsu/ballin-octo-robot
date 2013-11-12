@@ -7,5 +7,16 @@ exports = exports ? this
 exports.Messages = class Messages extends Backbone.Collection
     model: Message
     initialize: (data) ->
-    getPhoneNumbers: ->
-        _.uniq @pluck 'Phone Number'
+    getPeopleInvolved: -> _.uniq @pluck 'Name'
+    getTimestamps: ->
+        dictionary = {}
+        phoneNumbers = @getPeopleInvolved()
+        dictionary[pn] = [] for pn in phoneNumbers
+
+        @map (message) ->
+            dictionary[message.get('Name')].push message.get('timestamp')
+
+        _.each dictionary, (timestamps, key) -> timestamps.sort()
+
+        dictionary
+
