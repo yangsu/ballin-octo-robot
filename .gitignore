@@ -14,3 +14,8 @@ results
 npm-debug.log
 
 node_modules
+
+*.txt
+*.sublime-workspace
+
+secret.coffee

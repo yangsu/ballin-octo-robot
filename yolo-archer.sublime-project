@@ -1,0 +1,11 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/yang/Code/yolo-archer",
+			"folder_exclude_patterns": ["node_modules"],
+			"file_exclude_patterns": ["*.txt"]
+		}
+	]
+}
