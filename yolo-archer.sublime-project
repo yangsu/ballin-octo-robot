@@ -7,5 +7,19 @@
 			"folder_exclude_patterns": ["node_modules"],
 			"file_exclude_patterns": ["*.txt"]
 		}
-	]
+	],
+    "settings": {
+        "CoffeeScript": {
+            "lintConfFile": "/Users/yang/Code/yolo-archer/.coffeelintrc"
+        }
+    },
+    "build_systems":
+    [
+        {
+          "name": "Coffee",
+          "cmd": ["coffee", "src/messages/index.coffee"],
+          "path": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin",
+          "working_dir": "/Users/yang/Code/yolo-archer"
+        }
+    ]
 }
