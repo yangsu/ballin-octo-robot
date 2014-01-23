@@ -1,19 +1,19 @@
 {
-  "name": "yolo-archer",
+  "name": "ballin-octo-robot",
   "version": "0.0.0",
-  "description": "yolo-archer ===========",
+  "description": "ballin-octo-robot ===========",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/yangsu/yolo-archer.git"
+    "url": "git://github.com/yangsu/ballin-octo-robot.git"
   },
   "author": "",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/yangsu/yolo-archer/issues"
+    "url": "https://github.com/yangsu/ballin-octo-robot/issues"
   },
   "dependencies": {
     "async": "~0.2.9",
