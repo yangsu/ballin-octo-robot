@@ -14,6 +14,7 @@ schemas = require '../shared/db/schemas/'
 parallelLimit = 20
 
 saveMessage = (message, progressBar, onSave) ->
+    message = _.omit(message, 'Name', 'Country')
     async.waterfall [
         (cb) -> schemas.Message.findOneAndUpdate(message, message, {new: true, upsert: true}, cb)
         (message, cb) ->

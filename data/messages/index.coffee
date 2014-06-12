@@ -53,6 +53,7 @@ module.exports = (dir, options, callback) ->
             readTasks = generateCSVReadTasks(dir, filtered, progressBar)
             async.parallelLimit(readTasks, parallelLimit, cb)
         (messagesByFilename, cb) ->
+            console.log 'Deduping messages...'
             try
                 cb(null, dedupMessages(messagesByFilename))
             catch e
