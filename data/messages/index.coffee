@@ -18,6 +18,26 @@ generateCSVReadTasks = (dir, files, progressBar) ->
         memo
     , {}
 
+normalizeFilename = (filename) -> filename.replace(/\(\d\)\.csv/, '')
+dedupMessages = (messagesByFilename) ->
+    filenameGroups = _.chain(messagesByFilename)
+        .keys()
+        .groupBy(normalizeFilename)
+        .values()
+        .value()
+    _.reduce filenameGroups, (memo, group) ->
+        key = normalizeFilename(group[0])
+        messagesInGroups = _.chain(messagesByFilename)
+            .pick(group...)
+            .values()
+            .flatten()
+            .value()
+        uniqueMessages = _.uniq messagesInGroups, (message) -> JSON.stringify(message)
+        memo[key] = uniqueMessages
+        memo
+    , {}
+
+
 module.exports = (dir, options, callback) ->
     parallelLimit = options?.parallelLimit ? 20
     fileFilter = options?.filter ? _.identity
@@ -32,4 +52,9 @@ module.exports = (dir, options, callback) ->
             })
             readTasks = generateCSVReadTasks(dir, filtered, progressBar)
             async.parallelLimit(readTasks, parallelLimit, cb)
+        (messagesByFilename, cb) ->
+            try
+                cb(null, dedupMessages(messagesByFilename))
+            catch e
+                cb(e)
     ], callback
