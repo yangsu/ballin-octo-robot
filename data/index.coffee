@@ -14,9 +14,8 @@ schemas = require '../shared/db/schemas/'
 parallelLimit = 20
 
 saveMessage = (message, progressBar, onSave) ->
-    query = _.pick(message, 'Phone Number', 'Date', 'Message')
     async.waterfall [
-        (cb) -> schemas.Message.findOneAndUpdate(query, message, {new: true, upsert: true}, cb)
+        (cb) -> schemas.Message.findOneAndUpdate(message, message, {new: true, upsert: true}, cb)
         (message, cb) ->
             progressBar.tick()
             cb(null, message)
