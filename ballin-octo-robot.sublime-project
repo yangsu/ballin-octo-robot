@@ -2,24 +2,24 @@
 	"folders":
 	[
 		{
+			"file_exclude_patterns":
+			[
+				"*.txt",
+				"ballin-octo-robot.sublime-workspace"
+			],
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
 			"follow_symlinks": true,
-			"path": "/Users/yang/Code/ballin-octo-robot",
-			"folder_exclude_patterns": ["node_modules"],
-			"file_exclude_patterns": ["*.txt"]
+			"path": "."
 		}
 	],
-    "settings": {
-        "CoffeeScript": {
-            "lintConfFile": "/Users/yang/Code/ballin-octo-robot/.coffeelintrc"
-        }
-    },
-    "build_systems":
-    [
-        {
-          "name": "Coffee",
-          "cmd": ["coffee", "src/messages/index.coffee"],
-          "path": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin",
-          "working_dir": "/Users/yang/Code/ballin-octo-robot"
-        }
-    ]
+	"settings":
+	{
+		"CoffeeScript":
+		{
+			"lintConfFile": ".coffeelintrc"
+		}
+	}
 }

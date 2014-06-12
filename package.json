@@ -17,11 +17,15 @@
   },
   "dependencies": {
     "async": "~0.2.9",
-    "lodash": "~1.3.1",
-    "imap": "~0.8.1",
-    "mailparser": "~0.3.6",
+    "backbone": "~1.1.0",
     "csv": "~0.3.6",
+    "express": "~3.4.8",
+    "imap": "~0.8.1",
+    "lodash": "~1.3.1",
+    "mailparser": "~0.3.6",
     "moment": "~2.4.0",
-    "backbone": "~1.1.0"
+    "mongoose": "^3.8.12",
+    "oauth": "~0.9.11",
+    "progress": "^1.1.5"
   }
 }
