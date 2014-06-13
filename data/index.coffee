@@ -13,13 +13,6 @@ schemas = require '../shared/db/schemas/'
 
 parallelLimit = 20
 
-callsPipeline = (done) ->
-    async.waterfall [
-        async.apply(imports.calls, secret.calls.dir, {parallelLimit})
-        (callsByFilename, cb) ->
-            console.log callsByFilename
-    ], done
-
 saveMessage = (message, progressBar, onSave) ->
     message = _.omit(message, 'Name', 'Country')
     messageHash = hash(message)
@@ -54,11 +47,11 @@ messagesPipeline = (done) ->
     ], done
 
 async.parallel
-    calls: callsPipeline
+    calls: async.apply(imports.calls, secret.calls.dir, {parallelLimit})
     # messages: messagesPipeline
 , (e, d) ->
     if e?
         console.trace(e)
     else
-        return console.log d
+        # return console.log d
 

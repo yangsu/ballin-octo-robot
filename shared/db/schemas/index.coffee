@@ -1,3 +1,4 @@
+Call = require './call'
 Message = require './message'
 
-module.exports = {Message}
+module.exports = {Call, Message}

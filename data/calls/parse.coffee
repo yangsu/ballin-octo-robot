@@ -1,6 +1,7 @@
 fs = require 'fs'
 _ = require 'lodash'
 async = require 'async'
+moment = require 'moment'
 
 parseLine = (line) -> _.compact line.split /\s{2,}/
 
@@ -9,6 +10,12 @@ parseRow = (headers) -> (row) ->
         .zip(parseLine(row))
         .object()
         .value()
+
+transformRow = (row) ->
+    transformedRow = _.omit row, 'Call Type', 'Duration'
+    transformedRow.Type = row['Call Type']
+    transformedRow.Duration = moment.duration(row['Duration']).asMilliseconds()
+    transformedRow
 
 module.exports = (file, callback) ->
     async.waterfall [
@@ -19,7 +26,8 @@ module.exports = (file, callback) ->
                 headers = parseLine _.first lines
                 parseRowFunc = parseRow headers
                 rows = _.map _.rest(lines), parseRowFunc
-                cb(null, rows)
+                transformed = _.map rows, transformRow
+                cb(null, transformed)
             catch e
                 cb(e)
     ], callback
