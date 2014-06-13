@@ -10,13 +10,16 @@ dir = secret.messages.dir
 imports = {messages}
 
 schemas = require '../shared/db/schemas/'
+{hash} = require '../shared/utils/'
 
 parallelLimit = 20
 
 saveMessage = (message, progressBar, onSave) ->
     message = _.omit(message, 'Name', 'Country')
+    messageHash = hash(message)
+    message.hash = messageHash
     async.waterfall [
-        (cb) -> schemas.Message.findOneAndUpdate(message, message, {new: true, upsert: true}, cb)
+        (cb) -> schemas.Message.findOneAndUpdate({hash: messageHash}, message, {new: true, upsert: true}, cb)
         (message, cb) ->
             progressBar.tick()
             cb(null, message)

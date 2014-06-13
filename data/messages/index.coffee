@@ -4,6 +4,7 @@ _ = require 'lodash'
 async = require 'async'
 csv = require 'csv'
 ProgressBar = require 'progress'
+{hash} = require '../../shared/utils/'
 
 generateCSVReadTasks = (dir, files, progressBar) ->
     _.reduce files, (memo, file) ->
@@ -32,7 +33,7 @@ dedupMessages = (messagesByFilename) ->
             .values()
             .flatten()
             .value()
-        uniqueMessages = _.uniq messagesInGroups, (message) -> JSON.stringify(message)
+        uniqueMessages = _.uniq(messagesInGroups, hash)
         memo[key] = uniqueMessages
         memo
     , {}

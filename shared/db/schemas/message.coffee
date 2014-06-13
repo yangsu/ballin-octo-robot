@@ -11,6 +11,7 @@ MessageSchema = new Schema(
   Phone: String
   Country: String
   Attachments: String
+  hash: String
 )
 
 MessageSchema.statics.byCount = (cb) ->
@@ -32,7 +33,7 @@ MessageSchema.statics.byCount = (cb) ->
         }
     ], cb
 
-MessageSchema.index({'Phone Number': 1})
+MessageSchema.index({'Phone Number': 1, Date: 1, hash: 1})
 
 Message = mongoose.model('Message', MessageSchema)
 
