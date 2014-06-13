@@ -1,14 +1,11 @@
 mongoose = require '../connection'
 
-Schema = mongoose.Schema
-ObjectId = Schema.ObjectId
-
-MessageSchema = new Schema(
+MessageSchema = new mongoose.Schema(
   Name: String
   Subject: String
   Message: String
   Date: Date
-  Phone: String
+  'Phone Number': String
   Country: String
   Attachments: String
   hash: String
@@ -33,7 +30,8 @@ MessageSchema.statics.byCount = (cb) ->
         }
     ], cb
 
-MessageSchema.index({'Phone Number': 1, Date: 1, hash: 1})
+MessageSchema.index({'Phone Number': 1, Date: 1})
+MessageSchema.index({hash: 1})
 
 Message = mongoose.model('Message', MessageSchema)
 

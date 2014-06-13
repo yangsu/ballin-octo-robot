@@ -8,47 +8,13 @@ imports =
     messages: require './messages/'
     calls: require './calls/'
 
-schemas = require '../shared/db/schemas/'
-{hash} = require '../shared/utils/'
+options =
+    readParallelLimit: 20
+    saveParallelLimit: 5
 
-parallelLimit = 20
-
-saveMessage = (message, progressBar, onSave) ->
-    message = _.omit(message, 'Name', 'Country')
-    messageHash = hash(message)
-    message.hash = messageHash
-    async.waterfall [
-        (cb) -> schemas.Message.findOneAndUpdate({hash: messageHash}, message, {new: true, upsert: true}, cb)
-        (message, cb) ->
-            progressBar.tick()
-            cb(null, message)
-    ], onSave
-
-messagesPipeline = (done) ->
-    async.waterfall [
-        async.apply(imports.messages, secret.messages.dir, {parallelLimit})
-
-        (messagesByFilename, updated) ->
-            totalMessageCount = _.chain(messagesByFilename).values().flatten().value().length
-            progressBar = new ProgressBar('saving messages [:bar] :current/:total (:percent)', {
-                width: 50
-                total: totalMessageCount
-            })
-
-            updateRequestsPerFile = _.reduce messagesByFilename, (memo, messages, filename) ->
-                updateRequestsPerMessage = _.map messages, (message, i) ->
-                    async.apply(saveMessage, message, progressBar)
-                memo[filename] = (cb) ->
-                    async.parallelLimit(updateRequestsPerMessage, parallelLimit, cb)
-                memo
-            , {}
-            async.series(updateRequestsPerFile, updated)
-
-    ], done
-
-async.parallel
-    calls: async.apply(imports.calls, secret.calls.dir, {parallelLimit})
-    # messages: messagesPipeline
+async.series
+    calls: async.apply(imports.calls, secret.calls.dir, options)
+    messages: async.apply(imports.messages, secret.messages.dir, options)
 , (e, d) ->
     if e?
         console.trace(e)

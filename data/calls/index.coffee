@@ -9,12 +9,10 @@ save = require './save'
 {hash} = require '../../shared/utils/'
 
 module.exports = (dir, options, callback) ->
-    parallelLimit = options?.parallelLimit ? 20
-
     async.waterfall [
         async.apply(fs.readdir, dir)
 
-        (files, cb) ->
+        (files, readComplete) ->
             callLogs = _.filter(files, (file) -> /\.txt$/.test(file))
             progressBar = new ProgressBar('reading calls [:bar] :current/:total (:percent)', {
                 width: 50
@@ -25,9 +23,9 @@ module.exports = (dir, options, callback) ->
                 progressBar.tick()
                 parse(path.resolve(dir, file), cb)
 
-            async.parallelLimit(readTasks, parallelLimit, cb)
+            async.parallelLimit(readTasks, options?.readParallelLimit, readComplete)
 
-        (calls, cb) ->
+        (calls, saveComplete) ->
             uniqueCalls = _.chain(calls).flatten().uniq(hash).value()
             progressBar = new ProgressBar('saving calls [:bar] :current/:total (:percent)', {
                 width: 50
@@ -38,6 +36,6 @@ module.exports = (dir, options, callback) ->
                 progressBar.tick()
                 save(call, cb)
 
-            async.parallelLimit(saveTasks, parallelLimit, cb)
+            async.parallelLimit(saveTasks, options?.saveParallelLimit, saveComplete)
 
     ], callback
