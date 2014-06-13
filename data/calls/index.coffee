@@ -1,28 +1,21 @@
 fs = require 'fs'
-
+path = require 'path'
 _ = require 'lodash'
-csv = require 'csv'
-moment = require 'moment'
+async = require 'async'
+parse = require './parse'
 
-secret = require '../secret'
-{parseCalls} = require './parseCalls'
+generateReadTasks = (dir, files) ->
+    _.reduce files, (memo, file) ->
+        memo[file] = async.apply(parse, path.resolve(dir, file))
+        memo
+    , {}
 
-file = secret.calls.file
-
-rows = parseCalls file
-
-# console.log rows
-
-console.log _.chain(rows)
-    .groupBy('Number')
-    .each((calls, number) ->
-        times = _.chain(calls)
-            .pluck('Date')
-            .map((date) -> moment(date))
-            .sortBy((date) -> date.unix())
-            .value()
-        calls.splice.apply(calls, [0, calls.length].concat([number, times.length, _.last(times).fromNow()]))
-    )
-    .sortBy(1)
-    .reverse()
-    .value()
+module.exports = (dir, options, callback) ->
+    async.waterfall [
+        async.apply(fs.readdir, dir)
+        (files, cb) ->
+            parallelLimit = options?.parallelLimit ? 20
+            calllogs = _.filter(files, (file) -> /\.txt$/.test(file))
+            readTasks = generateReadTasks(dir, calllogs)
+            async.parallelLimit(readTasks, parallelLimit, cb)
+    ], callback

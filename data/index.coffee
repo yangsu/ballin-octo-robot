@@ -2,17 +2,23 @@ _ = require 'lodash'
 async = require 'async'
 ProgressBar = require 'progress'
 
-messages = require './messages/'
 secret = require './secret'
 
-dir = secret.messages.dir
-
-imports = {messages}
+imports =
+    messages: require './messages/'
+    calls: require './calls/'
 
 schemas = require '../shared/db/schemas/'
 {hash} = require '../shared/utils/'
 
 parallelLimit = 20
+
+callsPipeline = (done) ->
+    async.waterfall [
+        async.apply(imports.calls, secret.calls.dir, {parallelLimit})
+        (callsByFilename, cb) ->
+            console.log callsByFilename
+    ], done
 
 saveMessage = (message, progressBar, onSave) ->
     message = _.omit(message, 'Name', 'Country')
@@ -27,7 +33,7 @@ saveMessage = (message, progressBar, onSave) ->
 
 messagesPipeline = (done) ->
     async.waterfall [
-        async.apply(imports.messages, dir, {parallelLimit})
+        async.apply(imports.messages, secret.messages.dir, {parallelLimit})
 
         (messagesByFilename, updated) ->
             totalMessageCount = _.chain(messagesByFilename).values().flatten().value().length
@@ -48,7 +54,8 @@ messagesPipeline = (done) ->
     ], done
 
 async.parallel
-    messages: messagesPipeline
+    calls: callsPipeline
+    # messages: messagesPipeline
 , (e, d) ->
     if e?
         console.trace(e)
