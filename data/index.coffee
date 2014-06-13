@@ -2,19 +2,16 @@ _ = require 'lodash'
 async = require 'async'
 ProgressBar = require 'progress'
 
+CallsImporter = require './calls'
+MessagesImporter = require './messages'
 secret = require './secret'
 
-imports =
-    messages: require './messages/'
-    calls: require './calls/'
-
-options =
-    readParallelLimit: 20
-    saveParallelLimit: 5
+callsImporter = new CallsImporter(directory: secret.calls.dir)
+messagesImporter = new MessagesImporter(directory: secret.messages.dir)
 
 async.series
-    calls: async.apply(imports.calls, secret.calls.dir, options)
-    messages: async.apply(imports.messages, secret.messages.dir, options)
+    calls: (cb) -> callsImporter.execute(cb)
+    messages: (cb) -> messagesImporter.execute(cb)
 , (e, d) ->
     if e?
         console.trace(e)
