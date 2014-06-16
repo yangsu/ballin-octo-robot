@@ -25,7 +25,11 @@ class Importer
     parse: (file, cb) -> cb(null, file)
     save: (content, cb) -> cb(null, content)
 
-    readDirectory: (callback) -> glob("#{@directory}/*.#{@extension}", callback)
+    readDirectory: (callback) ->
+        async.waterfall [
+            async.apply(glob, "#{@directory}/*.#{@extension}")
+            (files, cb) => cb(null, _.filter(files, @filter))
+        ], callback
 
     dedup: (contents) -> _.uniq(contents, hash)
 
