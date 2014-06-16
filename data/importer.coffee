@@ -14,6 +14,7 @@ class Importer
         progress:
             width: 50
         parallelLimit:
+            dir: 2
             read: 20
             write: 5
 
@@ -26,9 +27,16 @@ class Importer
     save: (content, cb) -> cb(null, content)
 
     readDirectory: (callback) ->
+        dirs = if _.isArray @directory then @directory else [@directory]
+
+        readDirectoryTasks = _.map dirs, (dir) =>
+            async.apply(glob, "#{dir}/*.#{@extension}")
+
         async.waterfall [
-            async.apply(glob, "#{@directory}/*.#{@extension}")
-            (files, cb) => cb(null, _.filter(files, @filter))
+            async.apply(async.parallelLimit, readDirectoryTasks, @options.parallelLimit.dir)
+            (files, cb) =>
+                filtered = _.chain(files).flatten().filter(@filter).value()
+                cb(null, filtered)
         ], callback
 
     dedup: (contents) -> _.uniq(contents, hash)
