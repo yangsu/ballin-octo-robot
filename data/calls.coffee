@@ -27,7 +27,7 @@ options =
 
 class CallsImporter extends Importer
     name: 'Calls Importer'
-    extension: /\.txt$/
+    extension: 'txt'
 
     parse: (file, callback) ->
         async.waterfall [

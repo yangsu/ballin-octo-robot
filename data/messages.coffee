@@ -14,7 +14,7 @@ options =
 
 class MessagesImporter extends Importer
     name: 'Messages Importer'
-    extension: /\.csv$/
+    extension: 'csv'
 
     parse: (file, callback) ->
         async.waterfall [

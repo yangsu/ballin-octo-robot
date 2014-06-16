@@ -1,7 +1,6 @@
 _ = require 'lodash'
 async = require 'async'
-fs = require 'fs'
-path = require 'path'
+glob = require 'glob'
 ProgressBar = require 'progress'
 
 {hash} = require '../shared/utils/'
@@ -9,7 +8,7 @@ ProgressBar = require 'progress'
 class Importer
     name: 'Generic Importer'
 
-    extension: /./
+    extension: '*'
 
     defaults:
         progress:
@@ -26,21 +25,7 @@ class Importer
     parse: (file, cb) -> cb(null, file)
     save: (content, cb) -> cb(null, content)
 
-    readDirectory: (callback) ->
-        async.waterfall [
-            async.apply(fs.readdir, @directory)
-
-            (files, cb) =>
-                try
-                    filtered = _.chain(files)
-                        .filter (f) => @extension.test(f)
-                        .filter @filter
-                        .map (f) => path.resolve(@directory, f)
-                        .value()
-                    cb(null, filtered)
-                catch e
-                    cb(e)
-        ], callback
+    readDirectory: (callback) -> glob("#{@directory}/*.#{@extension}", callback)
 
     dedup: (contents) -> _.uniq(contents, hash)
 
