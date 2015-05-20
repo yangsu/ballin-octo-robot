@@ -8,5 +8,11 @@ hash = (str) ->
 
 memoizedHash = _.memoize(hash)
 
-module.exports = (obj) -> memoizedHash(JSON.stringify(obj))
+sortObj = (obj) ->
+    keys = _.keys(obj).sort()
+    _.pick(obj, keys...)
+
+module.exports = (obj) ->
+    console.log JSON.stringify(sortObj(obj))
+    memoizedHash(JSON.stringify(sortObj(obj)))
 

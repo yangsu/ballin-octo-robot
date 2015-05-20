@@ -30,7 +30,7 @@ class Importer
         dirs = if _.isArray @directory then @directory else [@directory]
 
         readDirectoryTasks = _.map dirs, (dir) =>
-            async.apply(glob, "#{dir}/*.#{@extension}")
+            async.apply(glob, "#{dir}/**/*.#{@extension}")
 
         async.waterfall [
             async.apply(async.parallelLimit, readDirectoryTasks, @options.parallelLimit.dir)
